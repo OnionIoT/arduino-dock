@@ -120,7 +120,6 @@ static int twi_protocol_read(int fd, uint8_t *buffer, int size, int verbose)
     int ret, i;
 
 #ifndef __APPLE__
-    usleep(50000);
     ret     = read(fd, buffer, size);
     usleep(10000);
 #else
