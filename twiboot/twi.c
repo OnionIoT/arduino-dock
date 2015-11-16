@@ -42,29 +42,29 @@
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #define ARRAY_SIZE(x) (sizeof(x) / sizeof(*x))
 
-#define TWI_DEFAULT_DEVICE  "/dev/i2c-0"
+#define TWI_DEFAULT_DEVICE      "/dev/i2c-0"
 
-#define READ_BLOCK_SIZE		128	/* bytes in one flash/eeprom read request */
-#define WRITE_BLOCK_SIZE	 16	/* bytes in one eeprom write request */
+#define READ_BLOCK_SIZE         128	/* bytes in one flash/eeprom read request */
+#define WRITE_BLOCK_SIZE        16	/* bytes in one eeprom write request */
 
 /* SLA+R */
-#define CMD_WAIT		0x00
-#define CMD_READ_VERSION	0x01
-#define CMD_READ_MEMORY		0x02
+#define CMD_WAIT                0x00
+#define CMD_READ_VERSION        0x01
+#define CMD_READ_MEMORY         0x02
 
 /* SLA+W */
 #define CMD_SWITCH_APPLICATION	CMD_READ_VERSION
-#define CMD_WRITE_MEMORY	CMD_READ_MEMORY
+#define CMD_WRITE_MEMORY        CMD_READ_MEMORY
 
 /* CMD_SWITCH_APPLICATION parameter */
-#define BOOTTYPE_BOOTLOADER	0x00				/* only in APP */
+#define BOOTTYPE_BOOTLOADER	    0x00				/* only in APP */
 #define BOOTTYPE_APPLICATION	0x80
 
 /* CMD_{READ|WRITE}_* parameter */
-#define MEMTYPE_CHIPINFO	0x00
-#define MEMTYPE_FLASH		0x01
-#define MEMTYPE_EEPROM		0x02
-#define MEMTYPE_PARAMETERS	0x03				/* only in APP */
+#define MEMTYPE_CHIPINFO        0x00
+#define MEMTYPE_FLASH           0x01
+#define MEMTYPE_EEPROM          0x02
+#define MEMTYPE_PARAMETERS      0x03				/* only in APP */
 
 struct multiboot_ops twi_ops;
 
@@ -73,6 +73,8 @@ struct twi_privdata {
     uint8_t     address;
     int         fd;
     int         connected;
+
+    int         verbose;
 
     uint8_t     pagesize;
     uint16_t    flashsize;
@@ -84,22 +86,64 @@ static struct option twi_optargs[] = {
     {"device",      1, 0, 'd'}, /* [ -d <device> ] */
 };
 
+static int twi_protocol_write(int fd, uint8_t *buffer, int size, int verbose)
+{
+    int ret, i;
+
+    if (verbose > 0) {
+        printf("twi write:: length: %d, buffer: ", size);
+        for (i = 0; i < size; i++) {
+            printf("0x%02x ", buffer[i]);
+        } 
+        printf("\n");
+    }
+
+#ifndef __APPLE__
+    ret     = write(twi->fd, buffer, size);
+#else
+    ret     = size;
+#endif // __APPLE__
+
+    return ret;
+}
+
+static int twi_protocol_read(int fd, uint8_t *buffer, int size, int verbose)
+{
+    int ret, i;
+
+#ifndef __APPLE__
+    ret     = read(twi->fd, buffer, size);
+#else
+    ret     = size;
+#endif // __APPLE__
+
+    if (verbose > 0) {
+        printf("twi read:: length: %d, buffer: ", size);
+        for (i = 0; i < size; i++) {
+            printf("0x%02x ", buffer[i]);
+        } 
+        printf("\n");
+    }
+
+    return ret;
+}
+
 static int twi_switch_application(struct twi_privdata *twi, uint8_t application)
 {
     uint8_t cmd[] = { CMD_SWITCH_APPLICATION, application };
 
-    return (write(twi->fd, cmd, sizeof(cmd)) != sizeof(cmd));
+    return (twi_protocol_write(twi->fd, cmd, sizeof(cmd), twi->verbose) != sizeof(cmd));
 }
 
 static int twi_read_version(struct twi_privdata *twi, char *version, int length)
 {
     uint8_t cmd[] = { CMD_READ_VERSION };
 
-    if (write(twi->fd, cmd, sizeof(cmd)) != sizeof(cmd))
+    if (twi_protocol_write(twi->fd, cmd, sizeof(cmd), twi->verbose) != sizeof(cmd))
         return -1;
 
     memset(version, 0, length);
-    if (read(twi->fd, version, length) != length)
+    if (twi_protocol_read(twi->fd, (uint8_t*)version, length, twi->verbose) != length)
         return -1;
 
     int i;
@@ -112,10 +156,10 @@ static int twi_read_version(struct twi_privdata *twi, char *version, int length)
 static int twi_read_memory(struct twi_privdata *twi, uint8_t *buffer, uint8_t size, uint8_t memtype, uint16_t address)
 {
     uint8_t cmd[] = { CMD_READ_MEMORY, memtype, (address >> 8) & 0xFF, (address & 0xFF) };
-    if (write(twi->fd, cmd, sizeof(cmd)) != sizeof(cmd))
+    if (twi_protocol_write(twi->fd, cmd, sizeof(cmd), twi->verbose) != sizeof(cmd))
         return -1;
 
-    return (read(twi->fd, buffer, size) != size);
+    return (twi_protocol_read(twi->fd, buffer, size, twi->verbose) != size);
 }
 
 static int twi_write_memory(struct twi_privdata *twi, uint8_t *buffer, uint8_t size, uint8_t memtype, uint16_t address)
@@ -146,7 +190,7 @@ static int twi_write_memory(struct twi_privdata *twi, uint8_t *buffer, uint8_t s
         memset(cmd +4 +size, 0xFF, twi->pagesize - size);
     }
 
-    int result = write(twi->fd, cmd, bufsize);
+    int result = twi_protocol_write(twi->fd, cmd, bufsize, twi->verbose);
     free(cmd);
 
     return (result != bufsize);
@@ -372,17 +416,24 @@ static int twi_optarg_cb(int val, const char *arg, void *privdata)
         }
         break;
 
+    case 'v': /* verbose output */
+        {
+            twi->verbose = 1;
+        }
+        break;
+
     case 'h':
     case '?': /* error */
-            fprintf(stderr, "Usage: twiboot [options]\n"
+            fprintf(stderr, "Usage: twidude [options]\n"
                 "  -a <address>                 - selects i2c address (0x01 - 0x7F)\n"
                 "  -d <device>                  - selects i2c device  (default: /dev/i2c-0)\n"
                 "  -r <flash|eeprom>:<file>     - reads flash/eeprom to file   (.bin | .hex | -)\n"
                 "  -w <flash|eeprom>:<file>     - write flash/eeprom from file (.bin | .hex)\n"
                 "  -n                           - disable verify after write\n"
                 "  -p <0|1|2>                   - progress bar mode\n"
+                "  -v                           - verbose output\n"
                 "\n"
-                "Example: twiboot -a 0x22 -w flash:blmc.hex -w flash:blmc_eeprom.hex\n"
+                "Example: twidude -a 0x22 -w flash:blmc.hex -w flash:blmc_eeprom.hex\n"
                 "\n");
             return -1;
 

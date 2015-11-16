@@ -9,6 +9,7 @@ struct multiboot {
     void *privdata;
 
     int verify;
+    int verbose;
     void (* progress_cb)(const char *msg, int pos, int max);
 };
 

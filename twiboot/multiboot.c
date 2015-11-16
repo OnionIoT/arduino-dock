@@ -61,6 +61,7 @@ static struct option main_optargs[] = {
     {"read",        1, 0, 'r'}, /* [ -r <flash|eeprom>:<file.hex> ] */
     {"write",       1, 0, 'w'}, /* [ -w <flash|eeprom>:<file.hex> ] */
     {"no-verify",   0, 0, 'n'}, /* [ -n ]                           */
+    {"verbose",     0, 0, 'v'}, /* [ -v ]                           */
     {0, 0, 0, 0}
 };
 
@@ -187,6 +188,10 @@ static int main_optarg_cb(int val, const char *arg, void *privdata)
         mboot->verify = 0;
         break;
 
+    case 'v': /* verbose output */
+        mboot->verbose              = 1;
+        break;
+
     case 'p':
         {
             switch (*arg) {
@@ -217,9 +222,11 @@ int main(int argc, char *argv[])
 {
     struct multiboot *mboot = NULL;
 
+    // save the program name
     char *progname = strrchr(argv[0], '/');
     progname = (progname != NULL) ? (progname +1) : argv[0];
 
+    // allocate all of the program modes
     int i;
     for (i = 0; i < ARRAY_SIZE(prog_modes); i++) {
         struct prog_mode *mode = &prog_modes[i];
@@ -238,9 +245,12 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    mboot->verify      = 1;
-    mboot->progress_cb = progress_mode1_cb;
+    // default values
+    mboot->verbose      = 0;
+    mboot->verify       = 1;
+    mboot->progress_cb  = progress_mode1_cb;
 
+    // read the optional arguments
     optarg_register(main_optargs, ARRAY_SIZE(main_optargs), main_optarg_cb, (void *)mboot);
     int abort = optarg_parse(argc, argv);
 
