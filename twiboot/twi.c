@@ -366,7 +366,7 @@ static int twi_write(struct multiboot *mboot, struct databuf *dbuf, int memtype)
         }
 
         pos += len;
-        if (twi->verbose > 0)    printf("twi_write:: waiting for next transaction\n");
+        if (twi->verbose > 0)    printf("twi_write:: pos = %d, dbuf->length = %d, waiting for next transaction\n", pos, dbuf->length);
         usleep(100000); // wait 10ms after each transaction
     }
 
