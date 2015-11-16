@@ -1,4 +1,4 @@
-TARGETS = twiboot
+TARGETS = twidude
 TARGET_DIR = bin
 BUILD_DIR = build
 

@@ -40,7 +40,7 @@ struct prog_mode {
 
 static struct prog_mode prog_modes[] =
 {
-    { "twiboot", &twi_ops }
+    { "twidude", &twi_ops }
 //    { "mpmboot", &mpm_ops },
 //    { "funkboot", &funk_ops },
 };
