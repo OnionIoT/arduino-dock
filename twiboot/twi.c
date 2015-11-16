@@ -366,6 +366,7 @@ static int twi_write(struct multiboot *mboot, struct databuf *dbuf, int memtype)
         }
 
         pos += len;
+        usleep(10000); // wait 10ms after each transaction
     }
 
     mboot->progress_cb(progress_msg, pos, dbuf->length);
