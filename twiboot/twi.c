@@ -105,6 +105,10 @@ static int twi_protocol_write(int fd, uint8_t *buffer, int size, int verbose)
             } 
         }
         printf("\n");
+
+        if (ret < 0) {
+            printf("\tERROR: %d, %s \n", errno, strerror(errno) );
+        }
     }
 
     return ret;
@@ -129,6 +133,10 @@ static int twi_protocol_read(int fd, uint8_t *buffer, int size, int verbose)
             } 
         }
         printf("\n");
+
+        if (ret < 0) {
+            printf("\tERROR: %d, %s \n", errno, strerror(errno) );
+        }
     }
 
     return ret;
