@@ -8,4 +8,5 @@ avrdude -p atmega328p -c linuxgpio -P gpio -b 115200 -U flash:w:bootloader.hex -
 
 
 # flash application code via i2c
-twiboot -a 0x29 -w flash:blink2.hex
+twidude -v -a 0x29 -w flash:blink2.hex
+

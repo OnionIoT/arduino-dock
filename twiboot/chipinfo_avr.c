@@ -37,6 +37,7 @@ static struct chipinfo chips[] = {
     { { 0x1E, 0x93, 0x0A }, "AVR Mega 88" },
     { { 0x1E, 0x94, 0x06 }, "AVR Mega 168" },
     { { 0x1E, 0x95, 0x02 }, "AVR Mega 32" },
+    { { 0x1E, 0x95, 0x0F }, "AVR Mega 32p" },
 };
 
 const char * chipinfo_get_avr_name(const uint8_t *sig)
