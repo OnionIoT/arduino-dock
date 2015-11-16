@@ -235,6 +235,7 @@ static int twi_open_device(struct twi_privdata *twi)
         close(twi->fd);
         return -1;
     }
+    usleep(50000);
 
     if (!(funcs & I2C_FUNC_I2C)) {
         fprintf(stderr, "I2C_FUNC_I2C not supported on '%s'!\n", twi->device);
@@ -251,6 +252,7 @@ static int twi_open_device(struct twi_privdata *twi)
         close(twi->fd);
         return -1;
     }
+    usleep(50000);
 #endif // __APPLE__
 
     twi->connected = 1;
