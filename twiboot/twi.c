@@ -226,6 +226,10 @@ static int twi_open_device(struct twi_privdata *twi)
         return -1;
     }
 
+    if (twi->verbose > 0) {
+        printf("twi_open_device:: setting device '%s' slave address to 0x%02x \n", twi->device, twi->address);
+    }
+
     if (ioctl(twi->fd, I2C_SLAVE, twi->address) < 0) {
         fprintf(stderr, "failed to select slave address '%d': %s\n", twi->address, strerror(errno));
         close(twi->fd);
