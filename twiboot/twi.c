@@ -99,7 +99,7 @@ static int twi_protocol_write(int fd, uint8_t *buffer, int size, int verbose)
     }
 
 #ifndef __APPLE__
-    ret     = write(twi->fd, buffer, size);
+    ret     = write(fd, buffer, size);
 #else
     ret     = size;
 #endif // __APPLE__
@@ -112,7 +112,7 @@ static int twi_protocol_read(int fd, uint8_t *buffer, int size, int verbose)
     int ret, i;
 
 #ifndef __APPLE__
-    ret     = read(twi->fd, buffer, size);
+    ret     = read(fd, buffer, size);
 #else
     ret     = size;
 #endif // __APPLE__
