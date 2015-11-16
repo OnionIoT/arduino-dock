@@ -400,7 +400,7 @@ static int twi_verify(struct multiboot *mboot, struct databuf *dbuf, int memtype
         }
 
         if (twi->verbose > 1)    printf("twi_verify:: pos = %d, dbuf->length = %d, waiting for next transaction\n", pos, dbuf->length);
-        usleep(1000000); // wait 10ms after each transaction
+        usleep(10000000); // wait 10ms after each transaction
         pos += len;
     }
 
