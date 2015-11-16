@@ -246,7 +246,7 @@ static int twi_close(struct multiboot *mboot)
     struct twi_privdata *twi = (struct twi_privdata *)mboot->privdata;
 
     if (twi->connected)
-        twi_switch_application(twi, BOOTTYPE_APPLICATION);
+        //twi_switch_application(twi, BOOTTYPE_APPLICATION);
 
     twi_close_device(twi);
     return 0;
