@@ -92,6 +92,7 @@ static int twi_protocol_write(int fd, uint8_t *buffer, int size, int verbose)
 
 #ifndef __APPLE__
     ret     = write(fd, buffer, size);
+    usleep(1000);
 #else
     ret     = size;
 #endif // __APPLE__
@@ -120,6 +121,7 @@ static int twi_protocol_read(int fd, uint8_t *buffer, int size, int verbose)
 
 #ifndef __APPLE__
     ret     = read(fd, buffer, size);
+    usleep(1000);
 #else
     ret     = size;
 #endif // __APPLE__
