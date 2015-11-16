@@ -62,6 +62,7 @@ static struct option main_optargs[] = {
     {"write",       1, 0, 'w'}, /* [ -w <flash|eeprom>:<file.hex> ] */
     {"no-verify",   0, 0, 'n'}, /* [ -n ]                           */
     {"verbose",     0, 0, 'v'}, /* [ -v ]                           */
+    {"verbose2",    0, 0, 'x'}, /* [ -x ]                           */
     {0, 0, 0, 0}
 };
 
@@ -190,6 +191,10 @@ static int main_optarg_cb(int val, const char *arg, void *privdata)
 
     case 'v': /* verbose output */
         mboot->verbose              = 1;
+        break;
+
+    case 'x': /* extra verbose output */
+        mboot->verbose              = 2;
         break;
 
     case 'p':

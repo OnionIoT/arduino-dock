@@ -125,7 +125,7 @@ static int twi_protocol_read(int fd, uint8_t *buffer, int size, int verbose)
 #endif // __APPLE__
 
     if (verbose > 0) {
-        printf("twi read:: length: %d, return: ", size, ret);
+        printf("twi read:: length: %d, return: %d", size, ret);
         if (verbose > 1) {
             printf(", buffer: ");
             for (i = 0; i < size; i++) {
