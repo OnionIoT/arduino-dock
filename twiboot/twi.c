@@ -90,19 +90,22 @@ static int twi_protocol_write(int fd, uint8_t *buffer, int size, int verbose)
 {
     int ret, i;
 
-    if (verbose > 0) {
-        printf("twi write:: length: %d, buffer: ", size);
-        for (i = 0; i < size; i++) {
-            printf("0x%02x ", buffer[i]);
-        } 
-        printf("\n");
-    }
-
 #ifndef __APPLE__
     ret     = write(fd, buffer, size);
 #else
     ret     = size;
 #endif // __APPLE__
+
+    if (verbose > 0) {
+        printf("twi write:: length: %d, return: %d", size, ret);
+        if (verbose > 1) {
+            printf(", buffer: ");
+            for (i = 0; i < size; i++) {
+                printf("0x%02x ", buffer[i]);
+            } 
+        }
+        printf("\n");
+    }
 
     return ret;
 }
@@ -118,10 +121,13 @@ static int twi_protocol_read(int fd, uint8_t *buffer, int size, int verbose)
 #endif // __APPLE__
 
     if (verbose > 0) {
-        printf("twi read:: length: %d, buffer: ", size);
-        for (i = 0; i < size; i++) {
-            printf("0x%02x ", buffer[i]);
-        } 
+        printf("twi read:: length: %d, return: ", size, ret);
+        if (verbose > 1) {
+            printf(", buffer: ");
+            for (i = 0; i < size; i++) {
+                printf("0x%02x ", buffer[i]);
+            } 
+        }
         printf("\n");
     }
 
@@ -426,6 +432,12 @@ static int twi_optarg_cb(int val, const char *arg, void *privdata)
         }
         break;
 
+    case 'x': /* extra verbose output */
+        {
+            twi->verbose = 2;
+        }
+        break;
+
     case 'h':
     case '?': /* error */
             fprintf(stderr, "Usage: twidude [options]\n"
@@ -436,6 +448,7 @@ static int twi_optarg_cb(int val, const char *arg, void *privdata)
                 "  -n                           - disable verify after write\n"
                 "  -p <0|1|2>                   - progress bar mode\n"
                 "  -v                           - verbose output\n"
+                "  -x                           - more verbose output\n"
                 "\n"
                 "Example: twidude -a 0x22 -w flash:blmc.hex -w flash:blmc_eeprom.hex\n"
                 "\n");
