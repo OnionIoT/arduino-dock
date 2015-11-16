@@ -92,7 +92,7 @@ static int twi_protocol_write(int fd, uint8_t *buffer, int size, int verbose)
 
 #ifndef __APPLE__
     ret     = write(fd, buffer, size);
-    usleep(1000);
+    usleep(10000);
 #else
     ret     = size;
 #endif // __APPLE__
@@ -121,7 +121,7 @@ static int twi_protocol_read(int fd, uint8_t *buffer, int size, int verbose)
 
 #ifndef __APPLE__
     ret     = read(fd, buffer, size);
-    usleep(1000);
+    usleep(10000);
 #else
     ret     = size;
 #endif // __APPLE__
@@ -367,7 +367,7 @@ static int twi_write(struct multiboot *mboot, struct databuf *dbuf, int memtype)
             return -1;
         }
 
-        if (twi->verbose > 0)    printf("twi_write:: pos = %d, dbuf->length = %d, waiting for next transaction\n", pos, dbuf->length);
+        if (twi->verbose > 1)    printf("twi_write:: pos = %d, dbuf->length = %d, waiting for next transaction\n", pos, dbuf->length);
         usleep(10000000); // wait 10ms after each transaction
 
         pos += len;
@@ -399,6 +399,8 @@ static int twi_verify(struct multiboot *mboot, struct databuf *dbuf, int memtype
             return -1;
         }
 
+        if (twi->verbose > 1)    printf("twi_verify:: pos = %d, dbuf->length = %d, waiting for next transaction\n", pos, dbuf->length);
+        usleep(1000000); // wait 10ms after each transaction
         pos += len;
     }
 
