@@ -1,4 +1,8 @@
-SUBDIRS = twidude twibootloader
+SUBDIRS = twidude
+ifeq ($(shell uname -s),Darwin)
+	# compile twibootloader only if on OS X (Requires AVR-lib)
+	SUBDIRS += twibootloader
+endif
 
 .PHONY: subdirs $(SUBDIRS)
 
