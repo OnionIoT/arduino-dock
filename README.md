@@ -15,7 +15,7 @@ Unlock : `0x3f`
 | Section     | Lock |
 |-------------|------|
 | Application | None |
-| Bootloader  | 512  |
+| Bootloader  | None |
 
 
 ##### Low Fuse
@@ -57,9 +57,22 @@ BOOTRST must be SET (0b0) for BOOTSZ setting to take effect.
 ##### Extended Fuse
 Value : `0x05`
 
+Brown-out detection level at 2.7 V, b101
+
+
+
 
 #### Flash bootloader
 `avrdude -p atmega328p -c linuxgpio -P gpio -b 115200 -U flash:w:bootloader.hex -U lock:w:0x0f:m`
+
+##### Lock Fuse
+Lock : `0x0f`
+
+| Section     | Lock                   |
+|-------------|------------------------|
+| Application | None                   |
+| Bootloader  | LPM and SPM Prohibited |
+
 
 #### Read Fuse Values
 `efuse:r:efuse.hex:h -U hfuse:r:hfuse.hex:h -U lfuse:r:lfuse.hex:h`
