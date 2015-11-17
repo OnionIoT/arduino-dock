@@ -83,3 +83,10 @@ To read the files:
 ## twidude
 Utility to flash ATmega memory (flash and eeprom) via I2C
 
+### Usage
+For flashing HEX file
+`twidude -a <i2c device address> -w <flash|eeprom>:<file>`
+
+Optionally:
+* `-d <I2C dev name>`
+ * uses `/dev/i2c-0` by default
