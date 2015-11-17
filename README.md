@@ -11,7 +11,12 @@ ATmega Bootloader based on TWI (Two Wire Interface/I2C) communication
 
 ##### Lock
 Unlock : `0x3f`
-Allow writing to the bootloader section
+
+| Section     | Lock |
+|-------------|------|
+| Application | None |
+| Bootloader  | 512  |
+
 
 ##### Low Fuse
 Value : `0xff`
@@ -24,11 +29,34 @@ Value : `0xff`
 | [3:0] | CKSEL Device clocking option                 | External low power crystal oscillator Frequency: 8 MHz to 16 MHz                                                      | 0b1111 |
 
 
+
 ##### High Fuse
 Value : `0xda`
 
+| Bit   | Field                                                  | Setting                                       | Value |
+|-------|--------------------------------------------------------|-----------------------------------------------|-------|
+| 7     | RSTDISBL External reset disable                        | External reset enabled                        | 1     |
+| 6     | DWEN debugWIRE enabled                                 | Debug Wire disabled                           | 1     |
+| 5     | SPIEN Enable Serial programming and data download      | SPI Programming enabled                       | 0     |
+| 4     | WDTON Watchdog timer always-on                         | Watchdog timer NOT always-on                  | 1     |
+| 3     | EESAVE Preserve EEPROM memory through Chip Erase Cycle | EESAVE disabled                               | 1     |
+| [2:1] | BOOTSZ Bootloader size                                 | Bootloader section is 1024 words (2048 bytes) | 0b01  |
+| 0     | BOOTRST Select reset vector                            | Reset vector  = bootloader                    | 0     |
+
+###### BOOTSZ Settings
+| BOOTSZ | Size (words) | Size (bytes | Pages | Application Start | Bootloader Start |
+|--------|--------------|-------------|-------|-------------------|------------------|
+| 0b11   | 256          | 512         | 4     | 0x0000            | 0x7f00           |
+| 0b10   | 512          | 1024        | 8     | 0x0000            | 0x7e00           |
+| 0b01   | 1024         | 2048        | 16    | 0x0000            | 0x7c00           |
+| 0b00   | 2048         | 4095        | 1     | 0x0000            | 0x7800           |
+
+BOOTRST must be SET (0b0) for BOOTSZ setting to take effect.
+
+
 ##### Extended Fuse
 Value : `0x05`
+
 
 #### Flash bootloader
 `avrdude -p atmega328p -c linuxgpio -P gpio -b 115200 -U flash:w:bootloader.hex -U lock:w:0x0f:m`
