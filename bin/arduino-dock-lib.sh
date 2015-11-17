@@ -91,6 +91,7 @@ FlashBootloader () {
 ### application
 # flash application via I2C/TWI
 #	arg1	- path to application hex file
+#	arg2	- additional arguments to twidude
 _TwiFlashApplication () {
 	# use I2C to initiate a reset to bootloader
 	i2cset -y 0 0x08 0xde 0xad
@@ -99,11 +100,12 @@ _TwiFlashApplication () {
 	# flash the sketch via I2C
 	# 	note: -n disables verification of flash after write
 	#		required since Arduino IDE copies hex file with stock bootloader included
-	twidude -a 0x29 -w flash:$1 -n
+	twidude -a 0x29 -w flash:$1
 }
 
 # flash application (based on intf type)
 #	arg1	- path to application hex file
+#	arg2	- additional arguments to flashing program
 FlashApplication () {
 	# find the interface type
 	intf=$(GetIntfConfig)
@@ -120,7 +122,7 @@ FlashApplication () {
 	# run the appropriate flashing subroutine
 	echo "> Flashing application ..."
 	if [ "$intf" == "twi" ]; then
-		_TwiFlashApplication "$1"	
+		_TwiFlashApplication "$1" "$2"
 	fi
 	echo "> Done"
 }

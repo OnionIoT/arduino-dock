@@ -18,6 +18,6 @@ fi
 
 
 # flash the ATmega
-FlashApplication $1
+FlashApplication "$1" "-n"
 
 echo "> Flash complete!"
