@@ -92,7 +92,7 @@ static int twi_protocol_write(int fd, uint8_t *buffer, int size, int verbose)
 
 #ifndef __APPLE__
     ret     = write(fd, buffer, size);
-    usleep(10000);
+    usleep(1000);
 #else
     ret     = size;
 #endif // __APPLE__
@@ -121,7 +121,7 @@ static int twi_protocol_read(int fd, uint8_t *buffer, int size, int verbose)
 
 #ifndef __APPLE__
     ret     = read(fd, buffer, size);
-    usleep(50000);
+    usleep(1000);
 #else
     ret     = size;
 #endif // __APPLE__
@@ -235,7 +235,7 @@ static int twi_open_device(struct twi_privdata *twi)
         close(twi->fd);
         return -1;
     }
-    usleep(50000);
+    usleep(1000);
 
     if (!(funcs & I2C_FUNC_I2C)) {
         fprintf(stderr, "I2C_FUNC_I2C not supported on '%s'!\n", twi->device);
@@ -252,7 +252,7 @@ static int twi_open_device(struct twi_privdata *twi)
         close(twi->fd);
         return -1;
     }
-    usleep(50000);
+    usleep(1000);
 #endif // __APPLE__
 
     twi->connected = 1;
@@ -264,7 +264,7 @@ static int twi_close(struct multiboot *mboot)
     struct twi_privdata *twi = (struct twi_privdata *)mboot->privdata;
 
     if (twi->connected)
-        //twi_switch_application(twi, BOOTTYPE_APPLICATION);
+        twi_switch_application(twi, BOOTTYPE_APPLICATION);
 
     twi_close_device(twi);
     return 0;
@@ -370,7 +370,7 @@ static int twi_write(struct multiboot *mboot, struct databuf *dbuf, int memtype)
         }
 
         if (twi->verbose > 1)    printf("twi_write:: pos = %d, dbuf->length = %d, waiting for next transaction\n", pos, dbuf->length);
-        usleep(10000000); // wait 10ms after each transaction
+        usleep(10000); // wait 10ms after each transaction
 
         pos += len;
     }
@@ -402,7 +402,7 @@ static int twi_verify(struct multiboot *mboot, struct databuf *dbuf, int memtype
         }
 
         if (twi->verbose > 1)    printf("twi_verify:: pos = %d, dbuf->length = %d, waiting for next transaction\n", pos, dbuf->length);
-        usleep(10000000); // wait 10ms after each transaction
+        usleep(10000); // wait 10ms after each transaction
         pos += len;
     }
 
