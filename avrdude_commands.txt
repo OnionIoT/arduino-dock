@@ -1,7 +1,7 @@
 ### AVRDUDE COMMANDS
 
 # set the fuses
-avrdude -p atmega328p -c linuxgpio -P gpio -b 115200 -e -u -U lock:w:0x3f:m -U efuse:w:0x05:m -U hfuse:w:0xDA:m -U lfuse:w:0x62:m
+avrdude -p atmega328p -c linuxgpio -P gpio -b 115200 -e -u -U lock:w:0x3f:m -U efuse:w:0x05:m -U hfuse:w:0xDA:m -U lfuse:w:0xff:m
 
 # flash the bootloader
 avrdude -p atmega328p -c linuxgpio -P gpio -b 115200 -U flash:w:bootloader.hex -U lock:w:0x0f:m
@@ -17,4 +17,5 @@ cat lock.hex ; cat efuse.hex ; cat hfuse.hex ; cat lfuse.hex
 
 # flash application code via i2c
 twidude -v -a 0x29 -w flash:blink2.hex
+
 
