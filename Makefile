@@ -1,9 +1,13 @@
-CODE_DIR = twiboot
+SUBDIRS = twidude twibootloader
 
-.PHONY: subdirs
+.PHONY: subdirs $(SUBDIRS)
 
-subdirs:
-	$(MAKE) -C $(CODE_DIR)
+subdirs: $(SUBDIRS)
+
+$(SUBDIRS):
+	$(MAKE) -C $@
 
 clean:
-	$(MAKE) -C $(CODE_DIR) clean
+	for dir in $(SUBDIRS); do \
+		$(MAKE) -C $$dir clean; \
+		done
