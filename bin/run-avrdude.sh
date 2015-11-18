@@ -17,9 +17,17 @@ if [ "$arg" != "valid" ]; then
 fi
 
 
+# find any additional required arguments based on communication interface
+arg=""
+intf=$(GetIntfConfig)
+if [ "$intf" == "twi" ]; then
+	# 	note: -n disables verification of flash after write
+	#		required since Arduino IDE copies hex file with stock bootloader included
+	arg="-n"
+fi
+
+
 # flash the ATmega
-# 	note: -n disables verification of flash after write
-#		required since Arduino IDE copies hex file with stock bootloader included
-FlashApplication "$1" "-n"
+FlashApplication "$1" "$arg"
 
 echo "> Flash complete!"

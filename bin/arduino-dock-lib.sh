@@ -98,8 +98,6 @@ _TwiFlashApplication () {
 	sleep 1
 
 	# flash the sketch via I2C
-	# 	note: -n disables verification of flash after write
-	#		required since Arduino IDE copies hex file with stock bootloader included
 	twidude -a 0x29 -w flash:$1 $2
 }
 
