@@ -382,7 +382,7 @@ static int twi_write(struct multiboot *mboot, struct databuf *dbuf, int memtype)
 static int twi_verify(struct multiboot *mboot, struct databuf *dbuf, int memtype)
 {
     struct twi_privdata *twi = (struct twi_privdata *)mboot->privdata;
-    char *progress_msg = (memtype == MEMTYPE_FLASH) ? "verifing flash" : "verifing eeprom";
+    char *progress_msg = (memtype == MEMTYPE_FLASH) ? "verifying flash" : "verifying eeprom";
 
     int pos = 0;
     uint8_t comp[READ_BLOCK_SIZE];
