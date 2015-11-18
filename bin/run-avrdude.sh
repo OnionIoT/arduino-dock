@@ -18,6 +18,8 @@ fi
 
 
 # flash the ATmega
+# 	note: -n disables verification of flash after write
+#		required since Arduino IDE copies hex file with stock bootloader included
 FlashApplication "$1" "-n"
 
 echo "> Flash complete!"
