@@ -58,10 +58,10 @@ CheckHexFile () {
 ### bootloader
 # set avrdude linuxgpio pins to output
 _SetAvrPins () {
-	echo "out" > /sys/class/gpio/gpio1/direction
-	echo "out" > /sys/class/gpio/gpio6/direction
-	echo "out" > /sys/class/gpio/gpio7/direction
-	echo "out" > /sys/class/gpio/gpio19/direction
+	gpioctl dirout 1 >& /dev/null
+	gpioctl dirout 6 >& /dev/null
+	gpioctl dirout 7 >& /dev/null
+	gpioctl dirout 19 >& /dev/null
 }
 
 # flash specified bootloader
