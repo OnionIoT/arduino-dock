@@ -129,7 +129,7 @@ FlashApplication () {
 	# check 
 
 	# run the appropriate flashing subroutine
-	echo "> Flashing application ..."
+	echo "> Flashing application '$1' ..."
 	if [ "$intf" == "twi" ]; then
 		_TwiFlashApplication "$1" "$2"
 	fi
