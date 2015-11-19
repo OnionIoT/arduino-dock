@@ -76,14 +76,12 @@ fi
 
 if [ $bFlashBootloader == 1 ]
 then
-	echo "> Flashing custom bootloader ..."
 	FlashBootloader
 	exit
 fi
 
 if [ $bFlashApplication == 1 ]
 then
-	echo "> Flashing '$applicationHex' ..."
 	FlashApplication "$applicationHex" "$options"
 	exit
 fi
