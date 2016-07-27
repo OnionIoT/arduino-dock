@@ -60,9 +60,8 @@ _FlashApplication () {
 FlashApplication () {
 	# run the appropriate flashing subroutine
 	echo "> Flashing application '$1' ..."
-	if [ "$intf" == "twi" ]; then
-		_FlashApplication "$1" "$2"
-	fi
+	_FlashApplication "$1" "$2"
+	
 	echo "> Done"
 }
 
