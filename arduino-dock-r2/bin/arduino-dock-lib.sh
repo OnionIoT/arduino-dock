@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# include the Onion sh lib
+. /usr/lib/onion/lib.sh
+
 ## Library to provide all required Arduino Dock R2 functionality
 
 
@@ -34,6 +37,11 @@ CheckHexFile () {
 
 # set avrdude linuxgpio pins to output
 _SetAvrPins () {
+	if [ "$(GetDeviceType)" == "$DEVICE_OMEGA2" ];
+	then
+		omega2-ctrl gpiomux set pwm1 gpio >& /dev/null
+	fi
+
 	gpioctl dirout 15 >& /dev/null
 	gpioctl dirout 16 >& /dev/null
 	gpioctl dirout 17 >& /dev/null
