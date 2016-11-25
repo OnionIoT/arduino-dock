@@ -37,7 +37,8 @@ CheckHexFile () {
 
 # set avrdude linuxgpio pins to output
 _SetAvrPins () {
-	if [ "$(GetDeviceType)" == "$DEVICE_OMEGA2" ];
+	if  [ "$(GetDeviceType)" == "$DEVICE_OMEGA2" ] ||
+            [ "$(GetDeviceType)" == "$DEVICE_OMEGA2P" ];
 	then
 		omega2-ctrl gpiomux set pwm1 gpio >& /dev/null
 	fi
