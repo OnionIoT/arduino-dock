@@ -49,7 +49,7 @@ _SetAvrPins () {
 	gpioctl dirout 19 >& /dev/null
 }
 
-# flash application 
+# flash application
 #	arg1	- path to application hex file
 _FlashApplication () {
 	# set avrdude gpio pins to output
@@ -57,10 +57,16 @@ _FlashApplication () {
 
 	# set the fuses
 	avrdude -C $DOCK_LIB/$AVRDUDE_CONFIG -p atmega328p -c linuxgpio -P gpio -b 115200 -e -u -U lock:w:$UNLOCK:m -U efuse:w:$EFUSE:m -U hfuse:w:$HFUSE:m -U lfuse:w:$LFUSE:m
+	AVRDUDE_RESULT=$?
 
 	# flash the bootloader and lock the section
-	avrdude -C $DOCK_LIB/$AVRDUDE_CONFIG -p atmega328p -c linuxgpio -P gpio -b 115200 -U flash:w:$1 -U lock:w:$LOCK:m
+	if [ $AVRDUDE_RESULT -eq 0 ]
+	then
+		avrdude -C $DOCK_LIB/$AVRDUDE_CONFIG -p atmega328p -c linuxgpio -P gpio -b 115200 -U flash:w:$1 -U lock:w:$LOCK:m
+		AVRDUDE_RESULT=$?
+	fi
 
+	echo "$AVRDUDE_RESULT"
 }
 
 # flash application (based on intf type)
@@ -69,9 +75,12 @@ _FlashApplication () {
 FlashApplication () {
 	# run the appropriate flashing subroutine
 	echo "> Flashing application '$1' ..."
-	_FlashApplication "$1" "$2"
-	
-	echo "> Done"
+	success=$(_FlashApplication "$1" "$2")
+
+	if [ $success -eq 0 ]
+	then
+		echo "> Done, flash successful"
+	else
+		echo "> ERROR, flash NOT successful"
+	fi
 }
-
-
