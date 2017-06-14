@@ -98,9 +98,10 @@ ResetMcu () {
     
     # the minimum reset hold time is apparently 2.5 usec
     # but we don't have usleep or any other sub-1 second sleep utility included by default
-    # let's just sleep for 1 second
+    # let's just sleep for 1 second; otherwise behaviour is undefined
     sleep 1
     
     gpioctl dirout-high $MCU_RESET_GPIO >& /dev/null     # bring back high
+    gpioctl dirin $MCU_RESET_GPIO >& /dev/null           # set GPIO back to input so MCU can resume
     echo "Done!"
 }
