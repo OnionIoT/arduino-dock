@@ -1,4 +1,4 @@
-#!bin/sh
+#!/bin/sh
 
 ## Script to provide all required Arduino Dock functionality
 
@@ -45,7 +45,11 @@ do
 		option|-option)
 			shift 
 			options="$1"
-		;;	
+		;;
+        reset|-reset)
+            bReset=1
+            shift
+        ;;
 		*)
 			echo "ERROR: Invalid Argument: $1"
 			echo ""
@@ -55,6 +59,13 @@ do
 	esac
 	shift
 done
+
+# reset takes priority
+if [ $bReset == 1 ]
+then
+    ResetMcu
+    exit
+fi
 
 if [ $bUsage == 1 ]
 then

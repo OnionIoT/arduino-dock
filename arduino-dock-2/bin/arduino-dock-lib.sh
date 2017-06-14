@@ -13,6 +13,9 @@ EFUSE="0x05"
 HFUSE="0xDA"
 LFUSE="0xFF"
 
+# pin setup
+MCU_RESET_GPIO=19
+
 DOCK_LIB="/usr/share/arduino-dock"
 AVRDUDE_CONFIG="avrdude.conf"
 
@@ -83,4 +86,21 @@ FlashApplication () {
 	else
 		echo "> ERROR, flash NOT successful"
 	fi
+}
+
+# microcontroller reset
+# the arduino dock R2 MCU_RESET pin is connected to one of the GPIOs
+ResetMcu () {
+    printf "> Resetting MCU ... "
+    gpioctl dirout $MCU_RESET_GPIO >& /dev/null          # set gpio as output
+    gpioctl dirout-high $MCU_RESET_GPIO >& /dev/null     # set high then bring low
+    gpioctl dirout-low $MCU_RESET_GPIO >& /dev/null
+    
+    # the minimum reset hold time is apparently 2.5 usec
+    # but we don't have usleep or any other sub-1 second sleep utility included by default
+    # let's just sleep for 1 second
+    sleep 1
+    
+    gpioctl dirout-high $MCU_RESET_GPIO >& /dev/null     # bring back high
+    echo "Done!"
 }
