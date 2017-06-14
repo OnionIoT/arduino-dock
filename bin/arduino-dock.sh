@@ -18,7 +18,7 @@ usage () {
 	echo "		6 				sck"
 	echo "		7 				reset"
 	echo "		19 				mosi"
-	echo "" 
+	echo ""
 	echo "Usage:"
 	echo "$0 flash <hex file>"
 	echo "	Flashes ATmega on Arduino Dock with specified hex file"
@@ -56,7 +56,7 @@ do
 		option|-option)
 			shift 
 			options="$1"
-		;;	
+		;;
 		*)
 			echo "ERROR: Invalid Argument: $1"
 			echo ""
